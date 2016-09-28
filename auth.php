@@ -37,6 +37,9 @@ require_once 'dbconfig.php';
         }
 
 
+        public static function checkInput($str){
+            return ( isset($str) && !empty($str) );
+        }
 
         public static function getUserType($userID){
 
