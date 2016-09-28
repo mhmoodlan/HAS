@@ -10,7 +10,7 @@ $server_name = '127.0.0.1';
 $username = 'root';
 $pass = 'root';
 
-require 'auth.php';
+require_once 'auth.php';
 try{
 
     $conn = new PDO("mysql:host=$server_name;dbname=HotelDB", $username, $pass);

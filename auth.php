@@ -1,5 +1,8 @@
 <?php
 
+require_once 'dbconfig.php';
+
+
     class Authentication {
 
         /*
@@ -31,6 +34,26 @@
         public  function  __construct($id)
         {
             $this->id = $id;
+        }
+
+
+
+        public static function getUserType($userID){
+
+            global $conn;
+            try{
+
+                $stmt = $conn->prepare("SELECT roleText From User, UserRole WHERE User.userType = UserRole.roleID AND User.userID=:ID ");
+
+                $stmt->bindValue(":ID", $userID);
+                $stmt->execute();
+
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return $res[0]['roleText'];
+
+            }catch (PDOException $e) {
+                print $e->getMessage(); # Will removed , just debugging ...
+            }
         }
 
         public function getToken(){
