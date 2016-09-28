@@ -76,5 +76,51 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 
 
 
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if(isset($_POST['adminID']) && isset($_POST['token'])) {
+
+        $msg = '';
+        $status = 0;
+
+
+        if (!Authentication::isSafeID($_POST['adminID'])) {
+            $msg = 'Admin ID is not valid .';
+            $status = 0;
+            echo json_encode(array("status" => $status, "message" => $msg));
+            exit(0);
+        }
+
+        $auth = new Authentication($_POST['adminID']);
+
+        if (!$auth->checkToken($_POST['token'])) {
+            $msg = 'Token is not valid .';
+            $status = 2;
+            echo json_encode(array("status" => $status, "message" => $msg));
+            exit(0);
+        }
+
+
+        # Add new Room ...
+
+        if(isset($_POST['sectionID']) && ! empty($_POST['sectionID']) &&
+            Authentication::isSafeID($_POST['sectionID'])){
+
+
+
+
+            }
+
+
+
+
+
+    }
+
+
+
+}
+
+
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Ahmed Al-ahmed
+ * User: root
  * Date: 25/09/16
  * Time: 08:11 م
  */
@@ -54,8 +54,8 @@ header('Access-Control-Allow-Origin: *');
 
 
                 case 'service_by_id':{
-                    if(! isset($_GET['sid']) || empty($_GET['sid']) ||
-                        !Authentication::isSafeID($_GET['sid']))
+                    if( isset($_GET['sid']) && !empty($_GET['sid']) &&
+                        Authentication::isSafeID($_GET['sid']))
 
 
                     $id = $_GET['sid'];
