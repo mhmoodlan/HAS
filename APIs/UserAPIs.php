@@ -128,6 +128,69 @@ header('Access-Control-Allow-Origin: *');
 
 
 
+    else
+
+
+        if($_SERVER['REQUEST_METHOD'] == 'GET') {
+            if(isset($_GET['cmd'])) {
+
+
+                switch ($_GET['cmd']){
+
+                    case 'get_user_by_id' :{
+
+                        if(Authentication::checkInput($_GET['userID'])
+                            && Authentication::isSafeID($_GET['userID'])){
+                            $stmt = $conn->prepare("SELECT * FROM User WHERE userID=:ID");
+                            $stmt->bindValue(":ID", $_GET['userID']);
+                            $stmt->execute();
+
+                            echo json_encode(array("status"=>1, "data"=>$stmt->fetchAll(PDO::FETCH_ASSOC)));
+                            exit(1);
+
+                        }else{
+                            echo json_encode(array("status"=>0, "msg"=>"User ID is not valid."));
+                            exit(1);
+                        }
+
+                    }
+
+                    case 'get_all_users' : {
+                        $stmt = $conn->prepare("SELECT * FROM User ");
+                        $stmt->execute();
+                        echo json_encode(array("status"=>1, "data"=>$stmt->fetchAll(PDO::FETCH_ASSOC)));
+                        exit(1);
+                    }
+
+                    default: {
+                        echo json_encode(array("status"=>2, "msg"=>"command not found."));
+                        exit(1);
+                    }
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+        }
+
+
+
 
 
 
