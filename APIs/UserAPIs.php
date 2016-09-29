@@ -139,6 +139,7 @@ header('Access-Control-Allow-Origin: *');
 
                     case 'get_user_by_id' :{
 
+                        
                         if(Authentication::checkInput($_GET['userID'])
                             && Authentication::isSafeID($_GET['userID'])){
                             $stmt = $conn->prepare("SELECT * FROM User WHERE userID=:ID");
