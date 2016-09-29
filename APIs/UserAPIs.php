@@ -48,10 +48,6 @@ header('Access-Control-Allow-Origin: *');
 
 
 
-
-
-
-
         if(isset($_POST['cmd']) && $_POST['cmd'] == 'add_new_client'){
 
             if(Authentication::checkInput($_POST['fname']) &&
@@ -122,7 +118,31 @@ header('Access-Control-Allow-Origin: *');
 
 
 
+        if(isset($_POST['cmd']) && $_POST['cmd'] == 'login'){
+            if(Authentication::checkInput($_POST['email']) && Authentication::checkInput($_POST['pass'])){
 
+                $stmt = $conn->prepare("SELECT * FROM User WHERE userEmail=:E AND userPassword=:P");
+                $stmt->bindValue(":E", $_POST['email']);
+                $stmt->bindValue(":P", $_POST['pass']);
+
+                $stmt->execute();
+
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if(count($res) > 0){
+                    $user_id = $res['userID'];
+                    $auth = new Authentication($user_id);
+                    $token = $auth->getToken();
+
+                    echo json_encode(array("status"=>1, "id" => $user_id, "token"=>$token));
+                    exit(1);
+                }else{
+                    echo json_encode(array("status"=>0,"msg"=>"username or password is wrong."));
+                }
+
+            }else{
+                echo json_encode(array("status"=>2,"msg"=>"parameters are invalid."));
+            }
+        }
 
     }
 
@@ -130,8 +150,6 @@ header('Access-Control-Allow-Origin: *');
 
 
     else
-
-
         if($_SERVER['REQUEST_METHOD'] == 'GET') {
             if(isset($_GET['cmd'])) {
 
