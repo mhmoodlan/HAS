@@ -52,7 +52,6 @@ class Module
             }
         }
     }
-
     public static function userHasBooking($userID){
         global $conn;
         $stmt = $conn->prepare("SELECT * FROM RoomBooking WHERE userID=:ID");
@@ -63,7 +62,6 @@ class Module
 
         return false;
     }
-
     public static function uploadFileToRemoteServer($name, $tmp_name, $target){
         $time = time();
         $file_name = md5($name) . $time . substr($name, strlen($name)-4);
@@ -74,5 +72,39 @@ class Module
         }else{
             return FALSE;
         }
+    }
+    public static function getAllUserRoles(){
+        global $conn;
+        $stmt = $conn->prepare("SELECT * FROM UserRole");
+        $stmt->execute();
+        $res = $stmt->fetchAll(2);
+        return $res;
+    }
+    public static function updateRoleText($id, $text){
+        global $conn;
+        $stmt = $conn->prepare("UPDATE UserRole SET roleText=:T WHERE roleID=:ID");
+        $stmt->bindValue(":T", $text);
+        $stmt->bindValue(":ID", $id);
+        $stmt->execute();
+    }
+    public static function getRoleText($id){
+        global $conn;
+        $stmt = $conn->prepare("SELECT roleText FROM UserRole WHERE roleID=:ID");
+        $stmt->bindValue(":ID", $id);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(2);
+        return $rs[0]["roleText"];
+    }
+    public static function removeRole($text){
+        global $conn;
+        $stmt = $conn->prepare("DELETE FROM UserRole WHERE roleText=:T");
+        $stmt->bindValue(":T", $text);
+        $stmt->execute();
+    }
+    public static function addNewRole($text){
+        global $conn;
+        $s = $conn->prepare("INSERT INTO UserRole(roleText) VALUES(:T) ");
+        $s->bindValue(":T", $text);
+        $s->execute();
     }
 }
