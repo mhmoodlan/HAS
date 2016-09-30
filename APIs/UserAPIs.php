@@ -4,13 +4,13 @@
  * User: Ahmed Al-Ahmed
  * Date: 28/09/16
  * Time: 09:01 م
- * test..
- */
+  */
     require_once 'auth.php';
     require_once 'dbconfig.php';
 
-header('Content-type: application/json');
-header('Access-Control-Allow-Origin: *');
+    header('Content-type: application/json');
+    header('Access-Control-Allow-Origin: *');
+
 
 
     function securityCode(){
@@ -40,15 +40,7 @@ header('Access-Control-Allow-Origin: *');
         }
     }
 
-
-# 1475159173-8b3c979c30244f0d2a4c865098ab5ac
-
-
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-
-
-
 
 
 
@@ -121,17 +113,58 @@ header('Access-Control-Allow-Origin: *');
         }
 
 
+        if(isset($_POST['cmd']) && $_POST['cmd'] == 'login'){
+            if(Authentication::checkInput($_POST['email']) && Authentication::checkInput($_POST['pass'])){
+
+                $stmt = $conn->prepare("SELECT * FROM User WHERE userEmail=:E AND userPassword=:P");
+                $stmt->bindValue(":E", $_POST['email']);
+                $stmt->bindValue(":P", $_POST['pass']);
+
+                $stmt->execute();
+
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if(count($res) > 0){
+                    $user_id = $res['userID'];
+                    $auth = new Authentication($user_id);
+                    $token = $auth->getToken();
+
+                    echo json_encode(array("status"=>1, "id" => $user_id, "token"=>$token));
+                    exit(1);
+                }else{
+                    echo json_encode(array("status"=>0,"msg"=>"username or password is wrong."));
+                }
+
+            }else{
+                echo json_encode(array("status"=>2,"msg"=>"parameters are invalid."));
+            }
+        }
 
 
+
+        if(isset($_POST['cmd']) && $_POST['cmd'] == 'change_password'){
+            if(Authentication::checkInput($_POST['newPass'])){
+
+                securityCode();
+
+               try{
+                   $stmt = $conn->prepare("UPDATE User SET userPassword=:P WHERE userID=:ID");
+                   $stmt->bindValue(":P", $_POST['newPass']);
+                   $stmt->bindValue(":ID", $_POST['adminID']);
+                   $stmt->execute();
+
+                   echo json_encode(array("status"=>1, "msg"=>"Password changed."));
+                   exit(1);
+               }catch(PDOException $e){
+                   echo json_encode(array("status"=>0, "msg"=>$e->getMessage()));
+                   exit(0);
+               }
+
+            }
+        }
 
     }
 
-
-
-
     else
-
-
         if($_SERVER['REQUEST_METHOD'] == 'GET') {
             if(isset($_GET['cmd'])) {
 
@@ -190,15 +223,6 @@ header('Access-Control-Allow-Origin: *');
 
 
         }
-
-
-
-
-
-
-
-
-
 
 
 
