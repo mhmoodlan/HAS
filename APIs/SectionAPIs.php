@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 				foreach($result as $row) {
 					$arr[] = array('sectionID'=>$row['sectionID'],
 								   'sectionName'=>$row['sectionName'],
-								   'sectionDesctription'=>$row['sectionDescription'],
+								   'sectionDescription'=>$row['sectionDescription'],
 								   'sectionRate'=>$row['sectionRate']);
 				}
 				echo json_encode(array('status' => 1, 'data' =>$arr));
